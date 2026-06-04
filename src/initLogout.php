@@ -22,5 +22,5 @@ if (ini_get('session.use_cookies')) {
 
 session_destroy();
 
-header('Location: index1.php');
+header('Location: index.php');
 exit;

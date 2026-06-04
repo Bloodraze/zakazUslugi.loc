@@ -17,7 +17,7 @@ $role = $_SESSION['role'] ?? '';
         <header id="header">
             <nav class="navbar-expand-md navbar-dark bg-dark fixed-top navbar">
                 <div class="container">
-                    <a class="navbar-brand" href="index1.php">My Application</a>
+                    <a class="navbar-brand" href="index.php">My Application</a>
                     <div class="collapse navbar-collapse">
                         <ul class="navbar-nav nav">
                             <li class="nav-item">
@@ -26,7 +26,6 @@ $role = $_SESSION['role'] ?? '';
 
                             <?php
                             $isAuthorized = !empty($_SESSION['user_id']);
-                            // $isClient = ($isAuthorized && $_SESSION['role'] === 'client');
                             ?>
 
                             <?php if ($isAuthorized): ?>

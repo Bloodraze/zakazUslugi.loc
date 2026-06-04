@@ -2,16 +2,16 @@
 session_start();
 
 if (!isset($_SESSION['user_id']) || ($_SESSION['role'] ?? '') !== 'admin') {
-    header('Location: index1.php');
+    header('Location: index.php');
     exit;
 }
 
 require_once __DIR__ . '/src/initAdminPanel.php';
 
 $statusMap = [
-    'На посещение'         => 'new',
-    'Время забронировано'  => 'in_process',
-    'Услуга оказана'       => 'done',
+    'На посещение' => 'new',
+    'Время забронировано' => 'in_process',
+    'Услуга оказана' => 'done',
     'Посещение перенесено' => 'change_provided',
 ];
 
