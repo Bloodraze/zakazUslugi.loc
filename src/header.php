@@ -1,3 +1,8 @@
+<?php
+session_start();
+$role = $_SESSION['role'] ?? '';
+?>
+
 <!DOCTYPE html>
 <html lang="ru-RU" class="h-100">
     <head>
@@ -12,18 +17,30 @@
         <header id="header">
             <nav class="navbar-expand-md navbar-dark bg-dark fixed-top navbar">
                 <div class="container">
-                    <a class="navbar-brand" href="/">My Application</a>
+                    <a class="navbar-brand" href="index1.php">My Application</a>
                     <div class="collapse navbar-collapse">
                         <ul class="navbar-nav nav">
                             <li class="nav-item">
                                 <a class="nav-link" href="feedback.php">отзывы</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="account.php">личный кабинет</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="logout.php">выйти</a>
-                            </li>
+
+                            <?php
+                            $isAuthorized = !empty($_SESSION['user_id']);
+                            // $isClient = ($isAuthorized && $_SESSION['role'] === 'client');
+                            ?>
+
+                            <?php if ($isAuthorized): ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="account.php">личный кабинет</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="logout.php">выйти</a>
+                                </li>
+                            <?php else: ?>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="login.php">личный кабинет</a>
+                                </li>
+                            <?php endif; ?>
                         </ul>
                     </div>
                 </div>

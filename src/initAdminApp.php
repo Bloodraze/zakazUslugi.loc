@@ -15,10 +15,10 @@ if($currentUser === null){
 
 $user->load($currentUser);
 
-if(!$user->isAdmin()){
-    header('Location: login.php');
-    exit;
-}
+// if(!$user->isAdmin()){
+//     header('Location: login.php');
+//     exit;
+// }
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if($id <= 0){
@@ -30,6 +30,11 @@ $application = $app->getById($id);
 
 if($application === null){
     die('Заявка не найдена');
+}
+
+if (!$user->isAdmin() && (int)$application['user_id'] !== (int)$currentUser['id']) {
+    http_response_code(403);
+    exit('Доступ запрещён');
 }
 
 if(isset($_GET['id'], $_GET['status'])){

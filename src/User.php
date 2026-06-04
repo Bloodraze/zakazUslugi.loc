@@ -10,6 +10,8 @@ class User extends Entity{
     public string $username;
     public string $email;
     public string $password;
+    public ?string $fio = null;
+    public ?string $phone = null;
     public bool $isGuest;
     public bool $isAdmin;
     public ?string $authToken = null;
@@ -19,29 +21,35 @@ class User extends Entity{
     }
 
     public function validate($data){
-        if(empty($data['login'])){
+        if (empty($data['login'])) {
             throw new InvalidArgumentException('Не передано имя пользователя');
         }
-        if(empty($data['email'])){
+        if (empty($data['email'])) {
             throw new InvalidArgumentException('Не передан email');
         }
-        if(empty($data['password'])){
+        if (empty($data['password'])) {
             throw new InvalidArgumentException('Не передан пароль');
         }
-        if(strlen($data['login']) < 3){
+        if (empty($data['fio'])) {
+            throw new InvalidArgumentException('Не передано ФИО');
+        }
+        if (empty($data['phone'])) {
+            throw new InvalidArgumentException('Не передан телефон');
+        }
+        if (strlen($data['login']) < 3) {
             throw new InvalidArgumentException('Имя пользователя слишком короткое');
         }
-        if(!filter_var($data['email'], FILTER_VALIDATE_EMAIL)){
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             throw new InvalidArgumentException('Неправильный формат email');
         }
-        if(strlen($data['password']) < 6){
+        if (strlen($data['password']) < 6) {
             throw new InvalidArgumentException('Пароль должен иметь хотя бы 6 символов');
         }
 
-        if($this->findOneByColumn('login', $data['login'])){
+        if ($this->findOneByColumn('login', $data['login'])) {
             throw new InvalidArgumentException('Пользователь с таким логином уже существует');
         }
-        if($this->findOneByColumn('email', $data['email'])){
+        if ($this->findOneByColumn('email', $data['email'])) {
             throw new InvalidArgumentException('Email уже занят');
         }
 
@@ -92,7 +100,7 @@ class User extends Entity{
         setcookie('token', $this->authToken, time() + 3600 * 24 * 30, '/');
     }
 
-    public function login(array $data){
+   public function login(array $data){
         $this->validateLogin($data);
         $userData = $this->findOneByColumn('login', $data['login']);
         if(!$userData){
@@ -103,15 +111,17 @@ class User extends Entity{
         }
         $this->load($userData);
         $this->refreshAuthToken();
-        //$this->update(['authToken' => $this->authToken]);
         $this->createTokenCookie();
+
         $_SESSION['user_id'] = $this->id;
+        $_SESSION['role'] = $this->role ?? 'user';
+
         return true;
     }
 
     public function logout(){
-        if($_COOKIE['token']){
-            setcookie('token', '', -1, '/', false, true);
+        if (isset($_COOKIE['token'])) {
+            setcookie('token', '', time() - 3600, '/');
         }
     }
 
@@ -130,11 +140,12 @@ class User extends Entity{
         if(empty($this->username) || empty($this->email) || empty($this->password)){
             return false;
         }
-
         $fields = [
             'login' => $this->username,
             'email' => $this->email,
             'password' => $this->password,
+            'fio' => $this->fio ?? '',
+            'phone' => $this->phone ?? '',
             'role' => $this->role ?? 'user',
         ];
 

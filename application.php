@@ -1,6 +1,6 @@
 <?php
-include 'init_add-application.php';
-include 'src/header.php';
+require_once __DIR__ . '/src/init_add-application.php';
+require_once __DIR__ . '/src/header.php';
 ?>
 
                 <nav aria-label="breadcrumb">

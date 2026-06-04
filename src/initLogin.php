@@ -1,5 +1,4 @@
 <?php
-
 require 'init.php';
 
 if($request->isPost){
@@ -7,8 +6,13 @@ if($request->isPost){
     
     try{
         $user->login($_POST['LoginForm']);
-        $_SESSION['user_id'] = $user->id;
-        header("Location: index1.php");
+        if ($user->role === 'client') {
+            header("Location: account.php");
+        } elseif ($user->role === 'admin') {
+            header("Location: admin-panel.php");
+        } else {
+            header("Location: index1.php");
+        }
         exit;
     } catch(src\exceptions\InvalidArgumentException $e){
         $error = $e->getMessage();
