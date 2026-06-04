@@ -20,7 +20,7 @@ include 'src/header.php';
                         <a class="btn btn-success" href="add-application.php">подать заявку</a>
                     </p>
                     <p>
-                        <!-- <a class="btn btn-primary" href="/account/application/password">сменить пароль</a> -->
+                        <a class="btn btn-primary" href="change-password.php">сменить пароль</a>
                     </p>
     
                     <div id="p0" data-pjax-container="" data-pjax-push-state data-pjax-timeout="1000">
