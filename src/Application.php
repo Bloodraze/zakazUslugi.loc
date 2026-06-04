@@ -3,7 +3,8 @@
 namespace src;
 
 use src\Entity;
-use src\exceptions\InvalidArgumentException;
+// либо подключайте свой класс, либо используйте стандартный
+// use src\exceptions\InvalidArgumentException;
 
 class Application extends Entity{
     protected string $tableName = 'application';
@@ -17,39 +18,41 @@ class Application extends Entity{
 
     public function validate(array $data){
         if(!isset($data['reason']) || mb_strlen($data['reason']) < 5){
-            throw new InvalidArgumentException('Поле должно содержать минимум 5 символов.');
+            throw new \InvalidArgumentException('Поле должно содержать минимум 5 символов.');
         }
         if(empty($data['reason'])){
-            throw new InvalidArgumentException('Поле не должно быть пустым');
+            throw new \InvalidArgumentException('Поле не должно быть пустым');
         }
         if(empty($data['text'])){
-            throw new InvalidArgumentException('Поле не должно быть пустым');
+            throw new \InvalidArgumentException('Поле не должно быть пустым');
         }
         if(empty($data['date'])){
-            throw new InvalidArgumentException('Дата не должна быть пустой');
-        }if(empty($data['time'])){
-            throw new InvalidArgumentException('Время не должно быть пустым');
+            throw new \InvalidArgumentException('Дата не должна быть пустой');
+        }
+        if(empty($data['time'])){
+            throw new \InvalidArgumentException('Время не должно быть пустым');
         }
     }
 
     public function saveApplication(int $userId, array $data){
         $this->user_id = $userId;
-        $this->reason = $data['reason'] ?? '';
-        $this->text = $data['text'] ?? '';
-        $this->date = $data['date'] ?? '';
-        $this->time = $data['time'] ?? '';
-        $this->status = 'new';
+        $this->reason  = $data['reason'] ?? '';
+        $this->text    = $data['text']   ?? '';
+        $this->date    = $data['date']   ?? '';
+        $this->time    = $data['time']   ?? '';
+        $this->status  = 'new';
 
         $this->validate($data);
-        
+
         $fields = [
             'user_id' => $this->user_id,
-            'reason' => $this->reason,
-            'text' => $this->text,
-            'date' => $this->date,
-            'time' => $this->time,
-            'status' => $this->status
+            'reason'  => $this->reason,
+            'text'    => $this->text,
+            'date'    => $this->date,
+            'time'    => $this->time,
+            'status'  => $this->status,
         ];
+
         return $this->insert($fields);
     }
 }
