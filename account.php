@@ -3,9 +3,6 @@
 require_once 'src/init_account.php';
 require_once 'src/init_add-application.php';
 
-use src\Application;
-
-// ID текущего пользователя
 $currentUserId = $_SESSION['user_id'] ?? null;
 
 /* УДАЛЕНИЕ ЗАЯВКИ */
@@ -17,9 +14,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
             if (
                 (int)$application->id === $deleteId &&
                 (int)$application->user_id === (int)$currentUserId &&
-                ($application->status ?? '') === 'new'   // удаляем только "new"
+                ($application->status ?? '') === 'new'
             ) {
-                // delete() без аргументов, как реализовано в Entity
                 $application->delete();
                 break;
             }

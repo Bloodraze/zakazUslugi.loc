@@ -3,8 +3,6 @@
 namespace src;
 
 use src\Entity;
-// либо подключайте свой класс, либо используйте стандартный
-// use src\exceptions\InvalidArgumentException;
 
 class Application extends Entity{
     protected string $tableName = 'application';
@@ -36,21 +34,21 @@ class Application extends Entity{
 
     public function saveApplication(int $userId, array $data){
         $this->user_id = $userId;
-        $this->reason  = $data['reason'] ?? '';
-        $this->text    = $data['text']   ?? '';
-        $this->date    = $data['date']   ?? '';
-        $this->time    = $data['time']   ?? '';
-        $this->status  = 'new';
+        $this->reason = $data['reason'] ?? '';
+        $this->text = $data['text']   ?? '';
+        $this->date = $data['date']   ?? '';
+        $this->time = $data['time']   ?? '';
+        $this->status = 'new';
 
         $this->validate($data);
 
         $fields = [
             'user_id' => $this->user_id,
-            'reason'  => $this->reason,
-            'text'    => $this->text,
-            'date'    => $this->date,
-            'time'    => $this->time,
-            'status'  => $this->status,
+            'reason' => $this->reason,
+            'text' => $this->text,
+            'date' => $this->date,
+            'time' => $this->time,
+            'status' => $this->status,
         ];
 
         return $this->insert($fields);

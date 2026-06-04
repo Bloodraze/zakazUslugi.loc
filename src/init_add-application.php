@@ -17,7 +17,6 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 
-// это создание заявки, а не удаление
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['delete_id'])) {
     try {
         if ($app->saveApplication($userId, $_POST)) {
