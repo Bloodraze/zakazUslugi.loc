@@ -8,7 +8,7 @@
                     <div class="col-md-6 text-center text-md-end">
                         <?php $role = $_SESSION['role'] ?? ''; ?>
                         <?php if ($role === 'admin'): ?>
-                            <a href="admin-panel.php">Панель управления</a> |
+                            <a href="admin-panel.php">Заявки</a> |
                             <a href="admin-reviews.php">Модерация отзывов</a> |
                             <a href="register.php">Регистрация клиентов</a>
                         <?php endif; ?>
