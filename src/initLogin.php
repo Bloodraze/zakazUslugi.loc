@@ -1,20 +1,21 @@
 <?php
-require 'init.php';
 
-if($request->isPost){
-    $user->load($request->post());
-    
-    try{
-        $user->login($_POST['LoginForm']);
-        if ($user->role === 'client') {
-            header("Location: account.php");
-        } elseif ($user->role === 'admin') {
-            header("Location: admin-panel.php");
-        } else {
-            header("Location: index.php");
-        }
+require __DIR__ . '/init.php';
+
+use src\User;
+
+$user  = new User($request, $db);
+$error = null;
+
+if ($request->isPost) {
+    $post = $request->post();
+    $data = $post['LoginForm'] ?? [];
+
+    try {
+        $user->login($data);
+        header('Location: account.php');
         exit;
-    } catch(src\exceptions\InvalidArgumentException $e){
+    } catch (\InvalidArgumentException $e) {
         $error = $e->getMessage();
     }
 }

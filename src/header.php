@@ -37,7 +37,7 @@ $role = $_SESSION['role'] ?? '';
                                 </li>
                             <?php else: ?>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="login.php">личный кабинет</a>
+                                    <a class="nav-link" href="login.php">Авторизация</a>
                                 </li>
                             <?php endif; ?>
                         </ul>
@@ -45,14 +45,6 @@ $role = $_SESSION['role'] ?? '';
                 </div>
             </nav>
         </header>
-
-        <?php if (!empty($flash)): ?>
-            <div class="container" style="padding-top: 70px">
-                <div class="alert alert-success mt-3">
-                    <?= htmlspecialchars($flash) ?>
-                </div>
-            </div>
-        <?php endif; ?>
 
         <main id="main" class="flex-shrink-0" role="main" style="padding-top: 70px">
             <div class="container">

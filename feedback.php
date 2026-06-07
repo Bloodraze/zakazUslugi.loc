@@ -72,10 +72,8 @@ include __DIR__ . '/src/header.php';
             <button type="submit" class="btn btn-primary">отправить</button>
         </div>
     </form>
-</div><!-- feedback-index -->
-
+</div>
 <hr>
-
 <h2>Отзывы</h2>
 
 <?php if (!empty($feedbacks)): ?>

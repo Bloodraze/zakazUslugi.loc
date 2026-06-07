@@ -4,43 +4,50 @@ require_once __DIR__ . '/src/initAdminApp.php';
 ?>
                 <nav aria-label="breadcrumb">
                     <ol id="w4" class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="/">Главная</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><a href="account.html">заявки</a></li>
+                        <li class="breadcrumb-item"><a href="index.php">Главная</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="account.php">заявки</a></li>
                     </ol>
                 </nav>
                 <div class="application-index">
-    
+ 
                     <h1>Заявка на посещение</h1>
 
+    <?php if($error): ?>
+        <div class="alert alert-danger mb-3">
+            <?= htmlspecialchars($error) ?>
+        </div>
+    <?php endif; ?>
+    <?php if($successMessage): ?>
+        <div class="alert alert-success mb-3">
+            <?= htmlspecialchars($successMessage) ?>
+        </div>
+    <?php endif; ?>
 
+    <div class="feedback-index p-3">
+       
+        <form id="w0" action="" method="post">
+            <input type="hidden" name="_csrf"
+                value="Y8NMvvT3LR7_0FE4QlfcxYPKc6Y2OK44IrCGNdMqbagnjTjstcRneKWCP3EvEIap9vpLxXJbx1sS4-9C6ksc4w==">
+            <div class="mb-3 field-feedback-date required">
+                <label class="form-label" for="app-date">Дата посещения</label>
+                <input type="date" id="app-date" class="form-control" name="date" value="<?= $application['date'] ?? '' ?>" aria-required="true">
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3 field-feedback-time required">
+                <label class="form-label" for="app-time">Время посещения</label>
+                <input type="time" id="app-time" class="form-control" name="time" value="<?= $application['time'] ?? '' ?>" aria-required="true">
+                <div class="invalid-feedback"></div>
+            </div>
 
-    
-                <div class="feedback-index p-3">
-               
-                <form id="w0" action="" method="post">
-                    <input type="hidden" name="_csrf"
-                        value="Y8NMvvT3LR7_0FE4QlfcxYPKc6Y2OK44IrCGNdMqbagnjTjstcRneKWCP3EvEIap9vpLxXJbx1sS4-9C6ksc4w==">
-                    <div class="mb-3 field-feedback-fio required">
-                        <label class="form-label" for="feedback-fio">Выберите дату</label>
-                        <input type="date" id="app-date" class="form-control" name="date" value="<?= $application['date'] ?? '' ?>" aria-required="true">
-                        <div class="invalid-feedback"></div>
-                    </div>
-                    <div class="mb-3 field-feedback-fio required">
-                        <label class="form-label" for="feedback-fio">Выберите время посещения</label>
-                        <input type="time" id="app-time" class="form-control" name="time" value="<?= $application['time'] ?? '' ?>" aria-required="true">
-                        <div class="invalid-feedback"></div>
-                    </div>
-                 
-
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary">изменить время</button>
-                    </div>
-                </form>
-                
-            </div><!-- feedback-index -->
-    
-                    <div id="p0" data-pjax-container="" data-pjax-push-state data-pjax-timeout="1000">
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">изменить время</button>
+            </div>
+        </form>
+        
+    </div>
  
+                    <div id="p0" data-pjax-container="" data-pjax-push-state data-pjax-timeout="1000">
+
                         <div id="w1" class="list-view">
                             <div class="d-flex flex-wrap justify-content-between layout-card">
                                 
@@ -48,7 +55,7 @@ require_once __DIR__ . '/src/initAdminApp.php';
                                     <div class="card" style="width: 18rem;">
                                         <div class="card-body">
                                             <h3 class="card-title"><?= htmlspecialchars($application['title'] ?? '') ?></h3>
-                                            <p class="card-text">Пользователь: <?= htmlspecialchars($application['author_name'] ?? '') ?></p>
+                                            <p class="card-text">Пользователь: <?= htmlspecialchars($application['author_name'] ?? 'Не известно') ?></p>
                                             <p class="card-text"><?= htmlspecialchars($application['description'] ?? '') ?></p>
                                             
                                             <div class="card-text">
@@ -63,13 +70,13 @@ require_once __DIR__ . '/src/initAdminApp.php';
                                             
                                             <div class="card-text">
                                                 <div class="opacity-50">статус:</div>
-                                                <?= htmlspecialchars($application['status_name'] ?? '') ?>
+                                                <?= htmlspecialchars($application['status_name'] ?? 'Не известно') ?>
                                             </div>
                                             
                                             
                                         </div>
                                     </div>
-                                  
+                                
                                 </div>
                             </div>
                         </div>

@@ -4,8 +4,27 @@ require_once 'src/init_account.php';
 require_once 'src/init_add-application.php';
 
 $currentUserId = $_SESSION['user_id'] ?? null;
+$role = $_SESSION['role'] ?? 'user';
 
-/* УДАЛЕНИЕ ЗАЯВКИ */
+$userApplications = [];
+$appModel = new src\Application($request, $db);
+
+if ($role === 'admin') {
+    $apps = $appModel->findAll();
+    foreach ($apps as $row) {
+        if (is_array($row)) {
+            $app = new src\Application($request, $db);
+            $app->load($row);
+            $userApplications[] = $app;
+        }
+    }
+    usort($userApplications, function($a, $b) {
+        return strtotime($b->created_at) - strtotime($a->created_at);
+    });
+} elseif ($currentUserId !== null) {
+    $userApplications = $appModel->findByColumn('user_id', (int)$currentUserId);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $deleteId = (int)$_POST['delete_id'];
 
@@ -26,8 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     exit;
 }
 
-include 'src/header.php';
-?>
+include 'src/header.php'; ?>
+
+<?php if(isset($_SESSION['flash']) && $_SESSION['flash']): ?>
+    <div class="alert alert-success">
+        <?= htmlspecialchars($_SESSION['flash']) ?>
+    </div>
+    <?php unset($_SESSION['flash']); ?>
+<?php endif; ?>
 
 <nav aria-label="breadcrumb">
     <ol id="w4" class="breadcrumb">
@@ -69,10 +94,22 @@ include 'src/header.php';
 
         <div id="w1" class="list-view">
             <div class="d-flex flex-wrap justify-content-between layout-card">
+                <?php
+                $statusLabels = [
+                    'new' => 'На посещение',
+                    'in_process' => 'Время забронировано',
+                    'done'  => 'Услуга оказана',
+                    'change_provided' => 'Посещение перенесено',
+                ];
+                ?>
+
                 <?php if (empty($userApplications)): ?>
                     <p>Заявок пока нет</p>
                 <?php else: ?>
                     <?php foreach ($userApplications as $application): ?>
+                        <?php
+                        $statusCode = $application->status ?? 'new';
+                        $statusLabel = $statusLabels[$statusCode] ?? $statusCode; ?>
                         <div class="item" data-key="<?= (int)$application->id ?>">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
@@ -97,11 +134,9 @@ include 'src/header.php';
 
                                     <div class="card-text">
                                         <div class="opacity-50">статус:</div>
-                                        <?= htmlspecialchars($application->status ?? 'new') ?>
+                                        <?= htmlspecialchars($statusLabel) ?>
                                     </div>
-
                                     <a class="btn btn-primary" href="admin-app.php?id=<?= (int)$application->id ?>">просмотр</a>
-
                                     <?php if (($application->status ?? '') === 'new'): ?>
                                         <form action="account.php" method="post" style="display:inline;">
                                             <input type="hidden" name="delete_id" value="<?= (int)$application->id ?>">

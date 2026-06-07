@@ -22,21 +22,22 @@ if (isset($_GET['id'], $_GET['status'])) {
     if ($id > 0 && isset($statusMap[$statusTitle])) {
         $statusValue = $statusMap[$statusTitle];
         $statusValueEsc = $db->real_escape_string($statusValue);
-        $id = (int)$id;
 
         $sql = "UPDATE application SET status = '{$statusValueEsc}' WHERE id = {$id}";
         $db->querySQL($sql);
-
+        
         header('Location: admin-panel.php');
         exit;
     }
 }
 
-$selectedStatusTitle = $_GET['ApplicationSearch']['status_id'] ?? '';
-$selectedStatusTitle = is_string($selectedStatusTitle) ? trim($selectedStatusTitle) : '';
+$selectedStatusTitle = '';
+if (isset($_GET['ApplicationSearch']['status_id'])) {
+    $selectedStatusTitle = trim((string)$_GET['ApplicationSearch']['status_id']);
+}
 
 if ($selectedStatusTitle !== '' && isset($statusMap[$selectedStatusTitle])) {
-    $statusValue = $statusMap[$selectedStatusTitle];             // ENUM-значение
+    $statusValue = $statusMap[$selectedStatusTitle];      // ENUM-значение из БД
     $statusValueEsc = $db->real_escape_string($statusValue);
     $sql = "SELECT * FROM application WHERE status = '{$statusValueEsc}' ORDER BY id ASC";
 } else {
@@ -95,8 +96,20 @@ include __DIR__ . '/src/header.php';
 
         <div id="w1" class="list-view">
             <div class="d-flex flex-wrap justify-content-between">
+                <?php
+                $statusLabels = [
+                    'new' => 'На посещение',
+                    'in_process' => 'Время забронировано',
+                    'done' => 'Услуга оказана',
+                    'change_provided' => 'Посещение перенесено',
+                ];
+                ?>
                 <?php if (!empty($applications)): ?>
                     <?php foreach ($applications as $app): ?>
+                        <?php
+                        $code  = $app['status'] ?? 'new';
+                        $label = $statusLabels[$code] ?? $code;
+                        ?>
                         <div class="item" data-key="<?= (int)$app['id'] ?>">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
@@ -119,7 +132,7 @@ include __DIR__ . '/src/header.php';
 
                                     <div class="card-text">
                                         <div class="opacity-50">статус:</div>
-                                        <?= htmlspecialchars($app['status'] ?? '') ?>
+                                        <?= htmlspecialchars($label) ?>
                                     </div>
 
                                     <a class="btn btn-primary"
@@ -144,6 +157,7 @@ include __DIR__ . '/src/header.php';
                 <?php else: ?>
                     <p>Заявок нет.</p>
                 <?php endif; ?>
+
             </div>
         </div>
     </div>

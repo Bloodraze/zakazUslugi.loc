@@ -1,21 +1,16 @@
 <?php
 
-
 namespace src;
-
 
 use src\services\DB;
 use src\services\Request;
-
 
 abstract class Entity{
     protected int $id;
     protected string $tableName;
 
-
     public function __construct(protected Request $request, protected DB $DB){
     }
-
 
     public function load(array $fields): void
     {
@@ -60,7 +55,6 @@ abstract class Entity{
         return $result[0] ?? null;
     }
 
-
     public function findByColumn(string $columnName, $value, int $limit = 0): ?array{
         $escapedValue = $this->DB->real_escape_string((string)$value);
         $columnName = $this->sanitizeColumnName($columnName);
@@ -81,7 +75,6 @@ abstract class Entity{
         return $entities;
     }
 
-
     public function findOneByColumn(string $columnName, $value): ?array{
         $columnName = $this->sanitizeColumnName($columnName);
         $escapedValue = $this->DB->real_escape_string((string)$value);
@@ -94,7 +87,6 @@ abstract class Entity{
         }
         return null;
     }
-
 
     public function update(array $fields){
         if(!isset($this->id) || $this->id <= 0){
@@ -110,7 +102,6 @@ abstract class Entity{
         $sql = "UPDATE " . $this->tableName . ' SET ' . $propValues . " WHERE id = " . (int)$this->id;
         return $this->DB->querySQL($sql);
     }
-
 
     public function delete(): bool{
         if(!isset($this->id) || $this->id <= 0){

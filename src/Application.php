@@ -13,6 +13,7 @@ class Application extends Entity{
     public string $date;
     public string $time;
     public string $status;
+    public string $created_at;
 
     public function validate(array $data){
         if(!isset($data['reason']) || mb_strlen($data['reason']) < 5){
@@ -35,9 +36,9 @@ class Application extends Entity{
     public function saveApplication(int $userId, array $data){
         $this->user_id = $userId;
         $this->reason = $data['reason'] ?? '';
-        $this->text = $data['text']   ?? '';
-        $this->date = $data['date']   ?? '';
-        $this->time = $data['time']   ?? '';
+        $this->text = $data['text'] ?? '';
+        $this->date = $data['date'] ?? '';
+        $this->time = $data['time'] ?? '';
         $this->status = 'new';
 
         $this->validate($data);
@@ -50,7 +51,21 @@ class Application extends Entity{
             'time' => $this->time,
             'status' => $this->status,
         ];
-
         return $this->insert($fields);
+    }
+    public function reschedule(array $data): bool
+    {
+        if (empty($data['date'])) {
+            throw new \InvalidArgumentException('Дата не должна быть пустой');
+        }
+        if (empty($data['time'])) {
+            throw new \InvalidArgumentException('Время не должно быть пустым');
+        }
+        $fields = [
+            'date' => $data['date'],
+            'time' => $data['time'],
+            'status' => 'change_provided',
+        ];
+        return $this->update($fields);
     }
 }
