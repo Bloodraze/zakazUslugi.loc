@@ -25,20 +25,49 @@ if ($role === 'admin') {
     $userApplications = $appModel->findByColumn('user_id', (int)$currentUserId);
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ApplicationSearch']['status_id'])) {
+    $statusId = (int)$_POST['ApplicationSearch']['status_id'];
+    
+    if ($statusId > 0) {
+        $statusMap = [
+            1 => 'new',
+            2 => 'in_process',
+            3 => 'done',
+            4 => 'change_provided',
+        ];
+        
+        $statusFilter = $statusMap[$statusId] ?? null;
+        
+        if ($statusFilter) {
+            $userApplications = array_filter($userApplications, function($app) use ($statusFilter) {
+                return ($app->status ?? '') === $statusFilter;
+            });
+        }
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_id'])) {
     $deleteId = (int)$_POST['delete_id'];
 
+    $deleted = false;
     if ($deleteId > 0 && $currentUserId !== null && !empty($userApplications)) {
         foreach ($userApplications as $application) {
-            if (
-                (int)$application->id === $deleteId &&
-                (int)$application->user_id === (int)$currentUserId &&
-                ($application->status ?? '') === 'new'
-            ) {
-                $application->delete();
-                break;
+            if ((int)$application->id === $deleteId) {
+                if (($application->status ?? '') === 'new') {
+                    if ($role === 'admin' || (int)$application->user_id === (int)$currentUserId) {
+                        $application->delete();
+                        $deleted = true;
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    if ($deleted) {
+        $_SESSION['flash'] = 'Заявка успешно удалена';
+    } else {
+        $_SESSION['flash'] = 'Не удалось удалить заявку';
     }
 
     header('Location: account.php');
@@ -98,7 +127,7 @@ include 'src/header.php'; ?>
                 $statusLabels = [
                     'new' => 'На посещение',
                     'in_process' => 'Время забронировано',
-                    'done'  => 'Услуга оказана',
+                    'done' => 'Услуга оказана',
                     'change_provided' => 'Посещение перенесено',
                 ];
                 ?>
