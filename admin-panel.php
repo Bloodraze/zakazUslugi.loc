@@ -37,7 +37,7 @@ if (isset($_GET['ApplicationSearch']['status_id'])) {
 }
 
 if ($selectedStatusTitle !== '' && isset($statusMap[$selectedStatusTitle])) {
-    $statusValue = $statusMap[$selectedStatusTitle];      // ENUM-значение из БД
+    $statusValue = $statusMap[$selectedStatusTitle];
     $statusValueEsc = $db->real_escape_string($statusValue);
     $sql = "SELECT * FROM application WHERE status = '{$statusValueEsc}' ORDER BY id ASC";
 } else {
